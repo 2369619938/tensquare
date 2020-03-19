@@ -34,7 +34,6 @@ public class RecruitController {
 	public Result recommend(String state){
 		return new Result(true,StatusCode.OK,"查询成功",recruitService.recommend(state));
 	}
-
 	@RequestMapping(value = "/search/newlist" ,method= RequestMethod.GET)
 	public Result newlist(String state){
 		return new Result(true,StatusCode.OK,"查询成功",recruitService.newlist(state));
