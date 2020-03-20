@@ -17,6 +17,7 @@
         <module name="tensquare_common" />
         <module name="tensquare_qa" />
         <module name="tensquare_recruit" />
+        <module name="tensquare_serch" />
         <module name="tensquare_spit" />
       </profile>
     </annotationProcessing>
@@ -31,6 +32,7 @@
       <module name="tensquare_common" options="-parameters" />
       <module name="tensquare_qa" options="-parameters" />
       <module name="tensquare_recruit" options="-parameters" />
+      <module name="tensquare_serch" options="-parameters" />
       <module name="tensquare_spit" options="-parameters" />
     </option>
   </component>
