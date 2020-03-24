@@ -1,4 +1,5 @@
 package com.tensquare.user.controller;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,8 @@ import com.tensquare.user.service.UserService;
 import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
+import util.JwtUtil;
+
 /**
  * 控制器层
  * @author Administrator
@@ -33,6 +36,22 @@ public class UserController {
 
 	@Autowired
 	private RedisTemplate redisTemplate;
+
+	@Autowired
+	private JwtUtil jwtUtil;
+
+	@RequestMapping(value = "/login" , method = RequestMethod.POST)
+	private Result login(@RequestBody User user){
+		user = userService.login(user.getMobile(),user.getPassword());
+		if(user == null ){
+			return new Result(false,StatusCode.LOGINERROR,"登陆失败");
+		}
+		String token = jwtUtil.createJWT(user.getId(), user.getMobile(), "user");
+		Map<String, Object> map = new HashMap<>();
+		map.put("token",token);
+		map.put("role","user");
+		return new Result(true,StatusCode.OK,"登陆成功",map);
+	}
 
 	@RequestMapping(value="/sendsms/{mobile}",method= RequestMethod.POST)
 	public Result sendSms(@PathVariable String mobile){
@@ -124,6 +143,7 @@ public class UserController {
 	 */
 	@RequestMapping(value="/{id}",method= RequestMethod.DELETE)
 	public Result delete(@PathVariable String id ){
+
 		userService.deleteById(id);
 		return new Result(true,StatusCode.OK,"删除成功");
 	}

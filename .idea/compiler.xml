@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="../../target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="tensquare_qa (1)" />
+        <module name="tensquare_sms" />
       </profile>
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -18,7 +19,6 @@
         <module name="tensquare_qa" />
         <module name="tensquare_recruit" />
         <module name="tensquare_serch" />
-        <module name="tensquare_sms" />
         <module name="tensquare_spit" />
         <module name="tensquare_user" />
       </profile>

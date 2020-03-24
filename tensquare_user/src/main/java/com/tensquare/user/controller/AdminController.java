@@ -1,4 +1,5 @@
 package com.tensquare.user.controller;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,8 @@ import com.tensquare.user.service.AdminService;
 import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
+import util.JwtUtil;
+
 /**
  * 控制器层
  * @author Administrator
@@ -29,8 +32,27 @@ public class AdminController {
 
 	@Autowired
 	private AdminService adminService;
-	
-	
+
+
+	@Autowired
+	private JwtUtil jwtUtil;
+	/***
+	 * 登陆
+	 */
+	@RequestMapping(value="/login",method= RequestMethod.POST)
+	public Result login(@RequestBody Admin admin){
+		Admin adminLogin = adminService.login(admin);
+		if(adminLogin==null){
+			return new Result(false,StatusCode.LOGINERROR,"登陆失败");
+		}
+		//生成令牌
+		String token = jwtUtil.createJWT(adminLogin.getId(), adminLogin.getLoginname(), "admin");
+		Map<String, Object> map = new HashMap<>();
+		map.put("token",token);
+		map.put("role","admin");
+		return new Result(true,StatusCode.OK,"登陆成功",map);
+	}
+
 	/**
 	 * 查询全部数据
 	 * @return
@@ -101,6 +123,7 @@ public class AdminController {
 	 */
 	@RequestMapping(value="/{id}",method= RequestMethod.DELETE)
 	public Result delete(@PathVariable String id ){
+
 		adminService.deleteById(id);
 		return new Result(true,StatusCode.OK,"删除成功");
 	}

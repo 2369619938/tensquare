@@ -8,18 +8,25 @@ import javax.persistence.criteria.CriteriaQuery;
 
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletRequest;
+
+import com.tensquare.user.pojo.Admin;
+import io.jsonwebtoken.Claims;
+import jdk.incubator.http.HttpRequest;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import util.IdWorker;
 
 import com.tensquare.user.dao.UserDao;
 import com.tensquare.user.pojo.User;
+import util.JwtUtil;
 
 /**
  * 服务层
@@ -41,6 +48,15 @@ public class UserService {
 
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
+
+	@Autowired
+	private JwtUtil jwtUtil;
+
+	@Autowired
+	private HttpServletRequest httpServletRequest;
+
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	/**
 	 * 查询全部列表
@@ -90,7 +106,8 @@ public class UserService {
 	 */
 	public void add(User user) {
 		user.setId( idWorker.nextId()+"" );
-		user.setId( idWorker.nextId()+"" );
+		//密码加密
+		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		user.setFollowcount(0);//关注数
 		user.setFanscount(0);//粉丝数
 		user.setOnline(0L);//在线时长
@@ -113,6 +130,11 @@ public class UserService {
 	 * @param id
 	 */
 	public void deleteById(String id) {
+		String admin_claims = (String) httpServletRequest.getAttribute("admin_claims");
+		if(admin_claims==null || admin_claims.equals(null)){
+			throw  new RuntimeException("权限不足");
+		}
+
 		userDao.deleteById(id);
 	}
 
@@ -186,11 +208,18 @@ public class UserService {
 		map.put("code",code+"");
 		System.out.println(mobile+"收到验证码是:"+code);
 		//缓存中保存
-		redisTemplate.opsForValue().set("code_"+mobile,code,6, TimeUnit.HOURS);
+		//redisTemplate.opsForValue().set("code_"+mobile,code,6, TimeUnit.HOURS);
 		//消息中间件发送客户
 		rabbitTemplate.convertAndSend("sms",map);
 
     }
 
 
+	public User login(String mobile, String password) {
+		User user = userDao.findByMobile(mobile);
+		if(user !=null && bCryptPasswordEncoder.matches(password,user.getPassword())){
+			return user;
+		}
+		return null;
+	}
 }
