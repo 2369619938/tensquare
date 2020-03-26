@@ -7,18 +7,20 @@
         <sourceTestOutputDir name="../../target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="tensquare_qa (1)" />
-        <module name="tensquare_sms" />
       </profile>
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="tansquare_eureka" />
         <module name="tensquare_article" />
         <module name="tensquare_base" />
         <module name="tensquare_common" />
+        <module name="tensquare_friend" />
         <module name="tensquare_qa" />
         <module name="tensquare_recruit" />
         <module name="tensquare_serch" />
+        <module name="tensquare_sms" />
         <module name="tensquare_spit" />
         <module name="tensquare_user" />
       </profile>
@@ -29,9 +31,11 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="tansquare_eureka" options="-parameters" />
       <module name="tensquare_article" options="-parameters" />
       <module name="tensquare_base" options="-parameters" />
       <module name="tensquare_common" options="-parameters" />
+      <module name="tensquare_friend" options="-parameters" />
       <module name="tensquare_qa" options="-parameters" />
       <module name="tensquare_recruit" options="-parameters" />
       <module name="tensquare_serch" options="-parameters" />

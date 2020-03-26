@@ -21,4 +21,11 @@ jwt:
     key: hrk
     ttl: 3600000
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:6868/eureka/
+  instance:
+    prefer-ip-address: true
+
 
